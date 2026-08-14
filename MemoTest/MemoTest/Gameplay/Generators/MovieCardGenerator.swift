@@ -9,9 +9,14 @@ import Foundation
 
 final class MoviesCardGenerator: CardGeneratorProtocol {
     let language: String = "es-AR"
+    let genre: String
+    
+    init(genre: String) {
+        self.genre = genre
+    }
     
     func generateDeck() async -> [CardObject] {
-        let movies = await getMovies()
+        let movies = await getMovies(genre: genre)
         var deck: [CardObject] = []
         
         for movie in movies {
@@ -37,14 +42,14 @@ final class MoviesCardGenerator: CardGeneratorProtocol {
         return deck.shuffled()
     }
     
-    private func getMovies() async -> [CardObject] {
+    private func getMovies(genre: String) async -> [CardObject] {
         do {
-            let urlPath = URL(string: "https://api.themoviedb.org/3/")!
+            let urlPath = URL(string: Globals.shared.TMDB_Base_URL)!
             let requestClient = URLSessionClient(baseURL: urlPath)
             let repository = TMDBMovieService(requestClient: requestClient)
             let randomNumber = Int.random(in: 1...20)
             let movies = try await repository.getMovies(
-                genre: .animation,
+                genre: genre,
                 page: randomNumber,
                 language: language
             )

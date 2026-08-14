@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol GameplayViewModelProtocol : AnyObject {
     var cards : [CardObject] { get }
     var pairFound : Int { get }
@@ -18,6 +19,7 @@ protocol GameplayViewModelProtocol : AnyObject {
 }
 
 protocol CardGeneratorProtocol {
+    var genre: String { get }
     func generateDeck() async -> [CardObject]
 }
 
@@ -28,6 +30,7 @@ enum GameplayState : Equatable {
 }
 
 @Observable
+@MainActor
 class GameplayViewModel : GameplayViewModelProtocol {
     private(set) var cards: [CardObject] = []
     private(set) var pairFound: Int = 0
@@ -37,8 +40,11 @@ class GameplayViewModel : GameplayViewModelProtocol {
     private var secondSelectedCardIndex : Int?
     private let generator : CardGeneratorProtocol?
     
-    init(generator : CardGeneratorProtocol) {
+    private let router: GameplayRouter
+    
+    init(generator : CardGeneratorProtocol, router: GameplayRouter) {
         self.generator = generator
+        self.router = router
         restartGame()
     }
     

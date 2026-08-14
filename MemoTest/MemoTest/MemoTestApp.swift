@@ -6,29 +6,45 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct MemoTestApp: App {
-   /* var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()*/
-
-    let gameplayViewModel = GameplayViewModel(generator: MoviesCardGenerator())
+    @StateObject private var dependencies = AppDependencies()
     
     var body: some Scene {
         WindowGroup {
-            GameplayView(viewModel: gameplayViewModel)
+            RootView(
+                coordinator: dependencies.coordinator,
+                homeViewModel: dependencies.homeViewModel
+            )
         }
-        //.modelContainer(sharedModelContainer)
+    }
+}
+
+@MainActor
+private final class AppDependencies: ObservableObject {
+    let coordinator: AppCoordinator
+    let homeViewModel: HomeViewModel
+
+    init() {
+        let coordinator = AppCoordinator()
+        let router = HomeRouter(coordinator: coordinator)
+
+        self.coordinator = coordinator
+        self.homeViewModel = HomeViewModel(router: router)
+    }
+}
+
+private struct RootView: View {
+    @ObservedObject var coordinator: AppCoordinator
+    let homeViewModel: HomeViewModel
+
+    var body: some View {
+        NavigationStack(path: $coordinator.path) {
+            HomeView(viewModel: homeViewModel)
+                .navigationDestination(for: ViewDestination.self) { destination in
+                    destination.view
+                }
+        }
     }
 }

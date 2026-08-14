@@ -9,7 +9,7 @@ import Foundation
 
 protocol TMDBMovieRepository: Sendable {
     func getMovies(
-        genre: TMDBMovieGenre,
+        genre: String,
         page: Int,
         language: String
     ) async throws -> [TMDBMovieDTO]
@@ -17,7 +17,7 @@ protocol TMDBMovieRepository: Sendable {
 
 struct MovieServiceAPI {
     static func getMovies(
-        genre: TMDBMovieGenre,
+        genre: String,
         page: Int,
         language: String
     ) -> APIRequest<TMDBMovieResponseDTO> {
@@ -27,7 +27,7 @@ struct MovieServiceAPI {
             queryItems: [
                 URLQueryItem(name: "page", value: String(page)),
                 URLQueryItem(name: "language", value: language),
-                URLQueryItem(name: "with_genres", value: String(genre.rawValue))
+                URLQueryItem(name: "with_genres", value: genre)
             ]
         )
     }
@@ -41,7 +41,7 @@ final class TMDBMovieService: TMDBMovieRepository {
     }
     
     func getMovies(
-        genre: TMDBMovieGenre,
+        genre: String,
         page: Int,
         language: String = "es-AR"
     ) async throws -> [TMDBMovieDTO] {

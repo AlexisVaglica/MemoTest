@@ -8,8 +8,7 @@
 import Foundation
 
 final class EmojisCardGenerator: CardGeneratorProtocol {
-    
-    // Lista de contenidos base para el juego (pueden ser animales, banderas, etc.)
+    var genre: String = ""
     private let baseContents = ["🐶", "🐱", "🦊", "🐻", "🦁", "🐷", "🐸", "🐵"]
 
     func generateDeck() -> [CardObject] {
