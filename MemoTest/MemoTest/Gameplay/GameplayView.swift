@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
 
 struct GameplayView: View {
     @State private var viewModel : GameplayViewModelProtocol
@@ -65,9 +66,15 @@ struct CardView: View {
                            .stroke(card.isMatched ? Color.green : Color.blue, lineWidth: 2)
                    )
                    .overlay(
-                    Text(card.content.title)
-                           .font(.system(size: 16))
-                           .foregroundStyle(.black)
+                    KFImage(card.content.posterURL)
+                        .placeholder {
+                            ProgressView()
+                        }
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 150)
+                        .cornerRadius(12)
+                        .clipped()
                    )
                    .opacity(rotationAngle < 90 ? 1 : 0)
                

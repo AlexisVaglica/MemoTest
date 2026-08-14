@@ -19,4 +19,16 @@ struct CardContent: Codable {
     let title: String
     let posterPath: String?
     let releaseDate: String?
+
+    var posterURL: URL? {
+        guard let posterPath else { return nil }
+
+        let normalizedPath = posterPath.trimmingCharacters(
+            in: CharacterSet(charactersIn: "/")
+        )
+
+        return URL(
+            string: "https://image.tmdb.org/t/p/w500/\(normalizedPath)"
+        )
+    }
 }

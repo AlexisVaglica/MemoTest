@@ -23,6 +23,15 @@ final class MoviesCardGenerator: CardGeneratorProtocol {
             deck.append(CardObject(content: cardContent)) // Segunda carta de la pareja
         }
         
+        let imageCaptureService = ImageCaptureService()
+        let urls = deck.compactMap(\.content.posterURL)
+        
+        do {
+            try await imageCaptureService.getImages(URLs: urls)
+        } catch {
+            print("No se pudieron precargar las imágenes: \(error.localizedDescription)")
+        }
+        
         return deck.shuffled()
     }
     
