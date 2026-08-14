@@ -8,6 +8,8 @@
 import Foundation
 
 final class MoviesCardGenerator: CardGeneratorProtocol {
+    let language: String = "es-AR"
+    
     func generateDeck() async -> [CardObject] {
         let movies = await getMovies()
         var deck: [CardObject] = []
@@ -40,10 +42,11 @@ final class MoviesCardGenerator: CardGeneratorProtocol {
             let urlPath = URL(string: "https://api.themoviedb.org/3/")!
             let requestClient = URLSessionClient(baseURL: urlPath)
             let repository = TMDBMovieService(requestClient: requestClient)
+            let randomNumber = Int.random(in: 1...20)
             let movies = try await repository.getMovies(
                 genre: .animation,
-                page: 1,
-                language: "es-AR"
+                page: randomNumber,
+                language: language
             )
             return movies.prefix(8).map { $0.toCardObjectAdapter() }
         } catch(let e) {
