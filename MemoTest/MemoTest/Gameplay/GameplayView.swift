@@ -65,8 +65,9 @@ struct CardView: View {
                            .stroke(card.isMatched ? Color.green : Color.blue, lineWidth: 2)
                    )
                    .overlay(
-                       Text(card.content)
-                           .font(.system(size: 40))
+                    Text(card.content.title)
+                           .font(.system(size: 16))
+                           .foregroundStyle(.black)
                    )
                    .opacity(rotationAngle < 90 ? 1 : 0)
                

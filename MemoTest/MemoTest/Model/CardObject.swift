@@ -7,9 +7,16 @@
 
 import Foundation
 
-struct CardObject: Identifiable, Equatable {
+struct CardObject: Identifiable {
     let id: UUID = UUID()
-    let content: String
+    let content: CardContent
     var isFaceUp: Bool = false
     var isMatched: Bool = false
+}
+
+struct CardContent: Codable {
+    let id: Int
+    let title: String
+    let posterPath: String?
+    let releaseDate: String?
 }

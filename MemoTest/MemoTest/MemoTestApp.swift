@@ -23,7 +23,7 @@ struct MemoTestApp: App {
         }
     }()*/
 
-    let gameplayViewModel = GameplayViewModel(generator: GameplayCardGenerator())
+    let gameplayViewModel = GameplayViewModel(generator: MoviesCardGenerator())
     
     var body: some Scene {
         WindowGroup {

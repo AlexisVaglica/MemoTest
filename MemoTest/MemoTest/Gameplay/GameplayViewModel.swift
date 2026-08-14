@@ -14,11 +14,11 @@ protocol GameplayViewModelProtocol : AnyObject {
     func select (_ card : CardObject)
     func checkForMatch(_ firstCardIndex: Int, _ secondCardIndex: Int)
     func clearMismatch()
-    func restartGame()
+    func restartGame() async
 }
 
 protocol CardGeneratorProtocol {
-    func generateDeck() -> [CardObject]
+    func generateDeck() async -> [CardObject]
 }
 
 enum GameplayState : Equatable {
@@ -59,22 +59,24 @@ class GameplayViewModel : GameplayViewModelProtocol {
     }
     
     func restartGame() {
-        cards = generator?.generateDeck() ?? []
-        firstSelectedCardIndex = nil
-        secondSelectedCardIndex = nil
-        pairFound = 0
-        gameplayState = .idle
+        Task {
+            cards = await generator?.generateDeck() ?? []
+            firstSelectedCardIndex = nil
+            secondSelectedCardIndex = nil
+            pairFound = 0
+            gameplayState = .idle
+        }
     }
     
     func checkForMatch(_ firstCardIndex: Int, _ secondCardIndex: Int) {
-        var firstCard = cards[firstCardIndex]
-        var secondCard = cards[secondCardIndex]
-        
         gameplayState = .checkingMatch
         
-        if firstCard.content == secondCard.content {
-            firstCard.isMatched = true
-            secondCard.isMatched = true
+        if isCardMatch(
+            firstCard: cards[firstCardIndex],
+            secondCard: cards[secondCardIndex]
+        ) {
+            cards[firstCardIndex].isMatched = true
+            cards[secondCardIndex].isMatched = true
             pairFound += 1
             gameplayState = .idle
             firstSelectedCardIndex = nil
@@ -82,6 +84,10 @@ class GameplayViewModel : GameplayViewModelProtocol {
         } else {
             gameplayState = .mismatchDelay
         }
+    }
+    
+    private func isCardMatch(firstCard: CardObject, secondCard: CardObject) -> Bool {
+        return firstCard.content.id == secondCard.content.id
     }
     
     func clearMismatch() {
