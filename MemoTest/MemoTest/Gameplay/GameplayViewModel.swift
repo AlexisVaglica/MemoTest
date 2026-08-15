@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 protocol GameplayViewModelProtocol : AnyObject {
     var cards : [CardObject] { get }
     var pairFound : Int { get }
@@ -30,7 +29,6 @@ enum GameplayState : Equatable {
 }
 
 @Observable
-@MainActor
 class GameplayViewModel : GameplayViewModelProtocol {
     private(set) var cards: [CardObject] = []
     private(set) var pairFound: Int = 0
