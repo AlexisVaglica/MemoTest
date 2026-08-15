@@ -5,6 +5,8 @@
 //  Created by AVaglica on 14/08/2026.
 //
 
+import Foundation
+
 @MainActor
 final class HomeRouter {
     private weak var coordinator: NavigationCoordinatorProtocol?
@@ -17,7 +19,13 @@ final class HomeRouter {
 
     func startGame(with genre: GenreObject) {
         guard let coordinator = self.coordinator else { return }
-        let generator = MoviesCardGenerator(genre: String(genre.id))
+        let imageCaptureService = ImageCaptureService()
+        let movieService = getMovieService()
+        let generator = MoviesCardGenerator(
+            genre: String(genre.id),
+            imageService: imageCaptureService,
+            movieService: movieService
+        )
         let router = GameplayRouter(coordinator: coordinator)
         let viewModel = GameplayViewModel(
             genreId: genre.id,
@@ -31,5 +39,11 @@ final class HomeRouter {
     
     func close() {
         coordinator?.goToRoot()
+    }
+    
+    private func getMovieService() -> TMDBMovieService {
+        let urlPath = URL(string: Globals.shared.TMDB_Base_URL)!
+        let requestClient = URLSessionClient(baseURL: urlPath)
+        return TMDBMovieService(requestClient: requestClient)
     }
 }

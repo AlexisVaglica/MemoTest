@@ -25,10 +25,8 @@ final class ImageCaptureService: ImageCaptureRepository {
                           )
                       }
                   }
-                  // Esperamos a que todas las descargas del grupo terminen o lancen error
+
                   try await group.waitForAll()
               }
     }
-    
-    
 }

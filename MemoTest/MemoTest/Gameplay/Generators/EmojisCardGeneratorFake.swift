@@ -1,5 +1,5 @@
 //
-//  CardGenerator.swift
+//  EmojisCardGeneratorFake.swift
 //  MemoTest
 //
 //  Created by AVaglica on 07/08/2026.
@@ -7,10 +7,14 @@
 
 import Foundation
 
-final class EmojisCardGenerator: CardGeneratorProtocol {
-    var genre: String = ""
+final class EmojisCardGeneratorFake: CardGeneratorProtocol {
+    var genre: String
     private let baseContents = ["🐶", "🐱", "🦊", "🐻", "🦁", "🐷", "🐸", "🐵"]
 
+    init(genre: String) {
+        self.genre = genre
+    }
+    
     func generateDeck() -> [CardObject] {
         var deck: [CardObject] = []
         var index = 0
@@ -27,6 +31,6 @@ final class EmojisCardGenerator: CardGeneratorProtocol {
             index += 1
         }
         
-        return deck.shuffled()
+        return deck
     }
 }

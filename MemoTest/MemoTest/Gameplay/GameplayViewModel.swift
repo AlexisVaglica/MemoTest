@@ -17,11 +17,6 @@ protocol GameplayViewModelProtocol: AnyObject {
     func backToHome()
 }
 
-protocol CardGeneratorProtocol {
-    var genre: String { get }
-    func generateDeck() async -> [CardObject]
-}
-
 enum GameplayState: Equatable {
     case idle
     case checkingMatch
