@@ -7,8 +7,7 @@
 
 import Foundation
 
-final class URLSessionClient: RequestClient {
-
+actor URLSessionClient: RequestClient {
     private let baseURL: URL
     private let session: URLSession
     private let token: String = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTc3ZjBkNTQ3MGJiZmE5MWRlZDhkM2YxYzU5MThlYSIsIm5iZiI6MTcxNjMxNzI3MC4wMTIsInN1YiI6IjY2NGNlYzU2ZmI1NTM5NGI4OGNkZDQ0ZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ERDd5fjodxlanvhp8tLvkCWeCobz7Gu82vEu0eWiMJA"
