@@ -17,27 +17,41 @@ struct GameplayView: View {
     }
 
     var body: some View {
-        VStack {
+        HStack {
+            Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
+            Spacer()
+            Text("Score: \(viewModel.userGame.points)")
+        }
 
-            Text("Parejas Encontradas: \(viewModel.pairFound)")
-                .font(.title)
-        }
-        .navigationBarBackButtonHidden(true)
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
-            ForEach(viewModel.cards) { card in
-                CardView(card: card)
-                    .onTapGesture {
-                        withAnimation(.easeInOut) {
-                            viewModel.select(card)
+        ZStack {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+                ForEach(viewModel.cards) { card in
+                    CardView(card: card)
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                viewModel.select(card)
+                            }
                         }
-                    }
-            }
-        }
-        .onChange(of: viewModel.gameplayState) { oldValue, newValue in
-            if newValue == .mismatchDelay {
-                withAnimation(.easeInOut.delay(0.5)) {
-                    viewModel.clearMismatch()
                 }
+            }
+            .navigationBarBackButtonHidden(true)
+            .onChange(of: viewModel.gameplayState) { oldValue, newValue in
+                if newValue == .mismatchDelay {
+                    withAnimation(.easeInOut.delay(0.7)) {
+                        viewModel.clearMismatch()
+                    }
+                }
+            }
+            .disabled(viewModel.gameplayState != .idle)
+
+            if viewModel.gameplayState == .endGame {
+                FinishPopup(
+                    score: viewModel.userGame.points,
+                    matches: viewModel.pairFound,
+                    totalMatches: viewModel.cards.count / 2,
+                    onGoHome: viewModel.backToHome
+                )
+                .transition(.scale.combined(with: .opacity))
             }
         }
     }
@@ -101,5 +115,51 @@ struct CardView: View {
             axis: (x: 0.0, y: 1.0, z: 0.0)
         )
         .opacity(card.isMatched ? 0.6 : 1.0)
+    }
+}
+
+struct FinishPopup: View {
+    let score: Int
+    let matches: Int
+    let totalMatches: Int
+    let onGoHome: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "trophy.fill")
+                .font(.system(size: 52))
+                .foregroundStyle(.yellow)
+
+            Text("¡Partida completada!")
+                .font(.title2.bold())
+
+            VStack(spacing: 8) {
+                Text("Score final")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("\(score)")
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+
+                Text("\(matches) de \(totalMatches) parejas encontradas")
+                    .font(.headline)
+            }
+
+            Button(action: onGoHome) {
+                Label("Volver al inicio", systemImage: "house.fill")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(24)
+        .frame(maxWidth: 360)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24))
+        .overlay {
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(.white.opacity(0.5), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.25), radius: 20, y: 10)
     }
 }

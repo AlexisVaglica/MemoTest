@@ -12,6 +12,10 @@ final class GameplayRouter {
     init(coordinator: NavigationCoordinatorProtocol) {
         self.coordinator = coordinator
     }
+    
+    func backToHome() {
+        coordinator?.goBack()
+    }
 
     func close() {
         coordinator?.goToRoot()
