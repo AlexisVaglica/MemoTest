@@ -20,7 +20,7 @@ struct GameplayView: View {
         HStack {
             Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
             Spacer()
-            Text("Score: \(viewModel.userGame.points)")
+            Text("Score: \(viewModel.gameResult.score)")
         }
 
         ZStack {
@@ -46,7 +46,7 @@ struct GameplayView: View {
 
             if viewModel.gameplayState == .endGame {
                 FinishPopup(
-                    score: viewModel.userGame.points,
+                    score: viewModel.gameResult.score,
                     matches: viewModel.pairFound,
                     totalMatches: viewModel.cards.count / 2,
                     onGoHome: viewModel.backToHome

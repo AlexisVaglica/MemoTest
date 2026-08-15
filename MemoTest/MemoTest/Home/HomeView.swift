@@ -16,11 +16,11 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.genreList, id: \.id) { genre in
+                ForEach(viewModel.genreList) { item in
                     Button {
-                        viewModel.startGame(with: genre)
+                        viewModel.startGame(with: item.genre)
                     } label: {
-                        GenreCardView(genre: genre)
+                        GenreCardView(item: item)
                     }
                     .buttonStyle(.plain)
                 }
@@ -28,11 +28,16 @@ struct HomeView: View {
             .padding()
         }
         .navigationTitle("Géneros")
+        .onAppear {
+            Task {
+                await viewModel.refresh()
+            }
+        }
     }
 }
 
 private struct GenreCardView: View {
-    let genre: GenreObject
+    let item: GenreHomeItem
 
     var body: some View {
         HStack(spacing: 16) {
@@ -42,8 +47,20 @@ private struct GenreCardView: View {
                 .frame(width: 48, height: 48)
                 .background(.blue.gradient, in: RoundedRectangle(cornerRadius: 12))
 
-            Text(genre.name)
-                .font(.headline)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.genre.name)
+                    .font(.headline)
+
+                if let bestScore = item.bestScore {
+                    Text("Mejor score: \(bestScore)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Sin partidas")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             Spacer()
         }

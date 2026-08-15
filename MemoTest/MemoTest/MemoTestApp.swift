@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MemoTestApp: App {
@@ -17,21 +18,34 @@ struct MemoTestApp: App {
                 coordinator: dependencies.coordinator,
                 homeViewModel: dependencies.homeViewModel
             )
+            .modelContainer(dependencies.modelContainer)
         }
     }
 }
 
 @MainActor
 private final class AppDependencies: ObservableObject {
+    let modelContainer: ModelContainer
     let coordinator: AppCoordinator
     let homeViewModel: HomeViewModel
 
     init() {
-        let coordinator = AppCoordinator()
-        let router = HomeRouter(coordinator: coordinator)
-
-        self.coordinator = coordinator
-        self.homeViewModel = HomeViewModel(router: router)
+        do {
+            let modelContainer = try ModelContainer(for: GameResult.self)
+            let gameResultRepository = GameResultSaveData(modelContext: modelContainer.mainContext)
+            
+            let coordinator = AppCoordinator()
+            let router = HomeRouter(coordinator: coordinator, gameResultRepository: gameResultRepository)
+            
+            self.modelContainer = modelContainer
+            self.coordinator = coordinator
+            self.homeViewModel = HomeViewModel(
+                router: router,
+                gameResultRepository: gameResultRepository
+            )
+        } catch(let e) {
+            fatalError("App Dependencies not available: \(e.localizedDescription)")
+        }
     }
 }
 
