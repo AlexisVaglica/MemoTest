@@ -52,9 +52,14 @@ struct GameplayCoreTests {
 
 struct GameplayCardGeneratorTests {
 
+    let genre : String
+    
+    init() {
+        genre = "action"
+    }
+    
     @Test
     func test_hasCardsGreaterThanZero() {
-        let genre = "action"
         let generator = EmojisCardGeneratorFake(genre: genre)
         let deck = generator.generateDeck()
         let pairs = deck.count / 2
@@ -66,7 +71,6 @@ struct GameplayCardGeneratorTests {
         let imageService = ImageCaptureMock()
         let movieService = TMDBMovieServiceMock()
         
-        let genre = "action"
         let generator = MoviesCardGenerator(
             genre: genre,
             imageService: imageService,
@@ -76,22 +80,39 @@ struct GameplayCardGeneratorTests {
         let pairs = deck.count / 2
         #expect(pairs > 0)
     }
-    
-    /*@Test
-    func test_hasCardsMoviesImagesGreaterThanZero() async {
-        let imageService = ImageServiceMock()
-        let genre = "action"
-        let generator = MoviesCardGenerator(genre: genre, imageService: imageService)
-        let deck = await generator.generateDeck()
-        let pairs = deck.count / 2
-        #expect(pairs > 0)
-    }*/
 }
 
 struct DTOTests {
 
     @Test
     func test_AdapterMovieDTOToCardObject() {
-
+        let movieDTO = TMDBMovieDTO(
+            id: 0,
+            title: "movie",
+            posterPath: "",
+            releaseDate: "")
+        
+        let cardContentExpected = CardContent(
+            id: 0,
+            title: "movie",
+            posterPath: "",
+            releaseDate: "")
+        
+        let deckCardExpected = CardObject(content: cardContentExpected)
+        
+        let movieDeckCard = movieDTO.toCardObjectAdapter()
+        
+        #expect(movieDeckCard.content.id == deckCardExpected.content.id)
+        #expect(movieDeckCard.content.title == deckCardExpected.content.title)
+    }
+    
+    @Test
+    func test_AdapterGenreDTOToGenreObject() {
+        let genreDTO = TMDBGenreDTO(id: 0, name: "action")
+        let genreExpected = GenreObject(id: 0, name: "action")
+        let genreObject = genreDTO.toGenreObjectAdapter()
+        
+        #expect(genreObject.id == genreExpected.id)
+        #expect(genreObject.name == genreExpected.name)
     }
 }

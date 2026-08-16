@@ -28,7 +28,7 @@ struct CardContent: Codable {
         )
 
         return URL(
-            string: "https://image.tmdb.org/t/p/w500/\(normalizedPath)"
+            string: "\(Globals.shared.TMDB_Image_URL)\(normalizedPath)"
         )
     }
 }

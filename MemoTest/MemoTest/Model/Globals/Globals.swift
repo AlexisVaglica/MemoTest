@@ -10,4 +10,5 @@ final class Globals {
     private init() {}
     
     public let TMDB_Base_URL : String = "https://api.themoviedb.org/3/"
+    public let TMDB_Image_URL : String = "https://image.tmdb.org/t/p/w500/"
 }
