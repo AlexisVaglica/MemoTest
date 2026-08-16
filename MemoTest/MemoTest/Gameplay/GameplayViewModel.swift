@@ -7,12 +7,14 @@
 
 import Foundation
 
+@MainActor
 protocol GameplayViewModelProtocol: AnyObject {
     var cards: [CardObject] { get }
     var pairFound: Int { get }
     var gameplayState: GameplayState { get }
     var gameResult: GameResultData { get }
     func select(_ card: CardObject)
+    func restartGame() async
     func clearMismatch()
     func backToHome()
 }
@@ -40,12 +42,16 @@ class GameplayViewModel: GameplayViewModelProtocol {
 
     private let pointsToMatch = 10
 
-    init(genreId: Int, generator: CardGeneratorProtocol, resultRepository: GameResultRepository, router: GameplayRouter) {
+    init(
+        genreId: Int,
+        generator: CardGeneratorProtocol,
+        resultRepository: GameResultRepository,
+        router: GameplayRouter
+    ) {
         self.gameResultRepository = resultRepository
         self.generator = generator
         self.router = router
         self.gameResult = GameResultData(score: 0, genreID: String(genreId))
-        restartGame()
     }
 
     func select(_ card: CardObject) {
@@ -65,14 +71,12 @@ class GameplayViewModel: GameplayViewModelProtocol {
         }
     }
 
-    private func restartGame() {
-        Task {
-            cards = await generator.generateDeck()
-            firstSelectedCardIndex = nil
-            secondSelectedCardIndex = nil
-            pairFound = 0
-            gameplayState = .idle
-        }
+    func restartGame() async {
+        cards = await generator.generateDeck()
+        firstSelectedCardIndex = nil
+        secondSelectedCardIndex = nil
+        pairFound = 0
+        gameplayState = .idle
     }
 
     private func checkForMatch(_ firstCardIndex: Int, _ secondCardIndex: Int) {
@@ -145,8 +149,6 @@ class GameplayViewModel: GameplayViewModelProtocol {
     }
 
     func backToHome() {
-        Task {
-            await router.backToHome()
-        }
+        router.backToHome()
     }
 }

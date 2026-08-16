@@ -5,10 +5,12 @@
 //  Created by AVaglica on 07/08/2026.
 //
 
+import Foundation
 import Testing
 
 @testable import MemoTest
 
+@MainActor
 struct GameplayCoreTests {
     let generatorMock: CardGeneratorProtocol
     let navigation: AppCoordinator
@@ -20,7 +22,7 @@ struct GameplayCoreTests {
         generatorMock = EmojisCardGeneratorFake(genre: genre)
         gameResultMock = GameResultSaveDataMock()
         navigation = AppCoordinator()
-        router = await GameplayRouter(coordinator: navigation)
+        router = GameplayRouter(coordinator: navigation)
     }
 
     @Test
@@ -33,11 +35,46 @@ struct GameplayCoreTests {
     }
 
     @Test
-    func test_loadedCardsAreFaceDownAndNotMatched() {
+    func test_loadedCardsAreFaceDownAndNotMatched() async {
         let viewModel = makeGameplayViewModel()
+        await viewModel.restartGame()
 
         #expect(viewModel.cards.allSatisfy { !$0.isFaceUp })
         #expect(viewModel.cards.allSatisfy { !$0.isMatched })
+    }
+
+    @Test
+    func test_selectingFirstCard_flipsOnlySelectedCard() async throws {
+        let viewModel = makeGameplayViewModel()
+        await viewModel.restartGame()
+
+        let selectedCard = try #require(viewModel.cards.first)
+        viewModel.select(selectedCard)
+
+        #expect(viewModel.cards.first?.isFaceUp == true)
+    }
+    
+    @Test
+    func test_selectingTwoCards_isMatch() async throws {
+        let viewModel = makeGameplayViewModel()
+        await viewModel.restartGame()
+
+        let firstCard = try #require(viewModel.cards.first)
+        let matchingCard = try #require(
+            viewModel.cards.first {
+                $0.content.id == firstCard.content.id && $0.id != firstCard.id
+            }
+        )
+
+        viewModel.select(firstCard)
+        viewModel.select(matchingCard)
+
+        let selectedCards = viewModel.cards.filter {
+            $0.id == firstCard.id || $0.id == matchingCard.id
+        }
+
+        #expect(selectedCards.count == 2)
+        #expect(selectedCards.allSatisfy { $0.isMatched })
     }
 
     private func makeGameplayViewModel() -> GameplayViewModel {

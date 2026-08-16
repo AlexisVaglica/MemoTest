@@ -54,6 +54,9 @@ struct GameplayView: View {
                 .transition(.scale.combined(with: .opacity))
             }
         }
+        .task {
+            await viewModel.restartGame()
+        }
     }
 }
 
