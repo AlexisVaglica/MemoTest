@@ -78,6 +78,7 @@ class GameplayViewModel: GameplayViewModelProtocol {
         firstSelectedCardIndex = nil
         secondSelectedCardIndex = nil
         pairFound = 0
+        changeState(newState: .idle)
     }
 
     private func checkForMatch(_ firstCardIndex: Int, _ secondCardIndex: Int) {

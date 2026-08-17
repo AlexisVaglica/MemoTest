@@ -41,6 +41,7 @@ struct GameplayCoreTests {
 
         #expect(viewModel.cards.allSatisfy { !$0.isFaceUp })
         #expect(viewModel.cards.allSatisfy { !$0.isMatched })
+        #expect(viewModel.gameplayState == .idle)
     }
 
     @Test

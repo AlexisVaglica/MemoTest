@@ -41,31 +41,33 @@ struct GameplayView: View {
 
     @ViewBuilder
     private var cardsGrid: some View {
-        HStack {
-            Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
-            Spacer()
-            Text("Score: \(viewModel.gameResult.score)")
-        }
-
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
-            ForEach(viewModel.cards) { card in
-                CardView(card: card)
-                    .onTapGesture {
-                        withAnimation(.easeInOut) {
-                            viewModel.select(card)
-                        }
-                    }
+        VStack {
+            HStack {
+                Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
+                Spacer()
+                Text("Score: \(viewModel.gameResult.score)")
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .onChange(of: viewModel.gameplayState) { oldValue, newValue in
-            if newValue == .mismatchDelay {
-                withAnimation(.easeInOut.delay(0.7)) {
-                    viewModel.clearMismatch()
+            
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+                ForEach(viewModel.cards) { card in
+                    CardView(card: card)
+                        .onTapGesture {
+                            withAnimation(.easeInOut) {
+                                viewModel.select(card)
+                            }
+                        }
                 }
             }
+            .navigationBarBackButtonHidden(true)
+            .onChange(of: viewModel.gameplayState) { oldValue, newValue in
+                if newValue == .mismatchDelay {
+                    withAnimation(.easeInOut.delay(0.7)) {
+                        viewModel.clearMismatch()
+                    }
+                }
+            }
+            .disabled(viewModel.gameplayState != .idle)
         }
-        .disabled(viewModel.gameplayState != .idle)
     }
 
     @ViewBuilder
