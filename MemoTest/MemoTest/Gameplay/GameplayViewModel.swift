@@ -21,6 +21,7 @@ protocol GameplayViewModelProtocol: AnyObject {
 
 enum GameplayState: Equatable {
     case idle
+    case loadingGame
     case checkingMatch
     case mismatchDelay
     case endGame
@@ -72,15 +73,15 @@ class GameplayViewModel: GameplayViewModelProtocol {
     }
 
     func restartGame() async {
+        changeState(newState: .loadingGame)
         cards = await generator.generateDeck()
         firstSelectedCardIndex = nil
         secondSelectedCardIndex = nil
         pairFound = 0
-        gameplayState = .idle
     }
 
     private func checkForMatch(_ firstCardIndex: Int, _ secondCardIndex: Int) {
-        gameplayState = .checkingMatch
+        changeState(newState: .checkingMatch)
 
         if isCardMatch(
             firstCard: cards[firstCardIndex],
@@ -91,7 +92,7 @@ class GameplayViewModel: GameplayViewModelProtocol {
                 secondCardIndex: secondCardIndex
             )
         } else {
-            gameplayState = .mismatchDelay
+            changeState(newState: .mismatchDelay)
         }
     }
 
@@ -102,7 +103,7 @@ class GameplayViewModel: GameplayViewModelProtocol {
     }
 
     private func addMatch(firstCardIndex: Int, secondCardIndex: Int) {
-        gameplayState = .idle
+        changeState(newState: .idle)
         pairFound += 1
 
         cards[firstCardIndex].isMatched = true
@@ -125,7 +126,7 @@ class GameplayViewModel: GameplayViewModelProtocol {
 
         firstSelectedCardIndex = nil
         secondSelectedCardIndex = nil
-        gameplayState = .idle
+        changeState(newState: .idle)
     }
 
     private func addPoints() {
@@ -138,7 +139,7 @@ class GameplayViewModel: GameplayViewModelProtocol {
 
     private func checkMatchEnd() {
         if isEndGame() {
-            gameplayState = .endGame
+            changeState(newState: .endGame)
 
             do {
                 try gameResultRepository.save(gameResult)
@@ -146,6 +147,11 @@ class GameplayViewModel: GameplayViewModelProtocol {
                 print("No se pudo guardar el resultado: \(error)")
             }
         }
+    }
+    
+    @MainActor
+    private func changeState(newState: GameplayState) {
+        gameplayState = newState
     }
 
     func backToHome() {

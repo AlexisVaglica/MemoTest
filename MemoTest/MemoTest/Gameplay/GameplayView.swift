@@ -5,8 +5,8 @@
 //  Created by AVaglica on 07/08/2026.
 //
 
-import Foundation
 import Kingfisher
+import Lottie
 import SwiftUI
 
 struct GameplayView: View {
@@ -17,32 +17,12 @@ struct GameplayView: View {
     }
 
     var body: some View {
-        HStack {
-            Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
-            Spacer()
-            Text("Score: \(viewModel.gameResult.score)")
-        }
-
         ZStack {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
-                ForEach(viewModel.cards) { card in
-                    CardView(card: card)
-                        .onTapGesture {
-                            withAnimation(.easeInOut) {
-                                viewModel.select(card)
-                            }
-                        }
-                }
+            cardsGrid
+            
+            if viewModel.gameplayState == .loadingGame {
+                lottieView
             }
-            .navigationBarBackButtonHidden(true)
-            .onChange(of: viewModel.gameplayState) { oldValue, newValue in
-                if newValue == .mismatchDelay {
-                    withAnimation(.easeInOut.delay(0.7)) {
-                        viewModel.clearMismatch()
-                    }
-                }
-            }
-            .disabled(viewModel.gameplayState != .idle)
 
             if viewModel.gameplayState == .endGame {
                 FinishPopup(
@@ -56,6 +36,48 @@ struct GameplayView: View {
         }
         .task {
             await viewModel.restartGame()
+        }
+    }
+
+    @ViewBuilder
+    private var cardsGrid: some View {
+        HStack {
+            Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
+            Spacer()
+            Text("Score: \(viewModel.gameResult.score)")
+        }
+
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+            ForEach(viewModel.cards) { card in
+                CardView(card: card)
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            viewModel.select(card)
+                        }
+                    }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .onChange(of: viewModel.gameplayState) { oldValue, newValue in
+            if newValue == .mismatchDelay {
+                withAnimation(.easeInOut.delay(0.7)) {
+                    viewModel.clearMismatch()
+                }
+            }
+        }
+        .disabled(viewModel.gameplayState != .idle)
+    }
+
+    @ViewBuilder
+    private var lottieView: some View {
+        ZStack {
+            Color.black
+                .ignoresSafeArea()
+
+            LottieView(animation: .named("memotest_loading_cards"))
+                .playing(loopMode: .loop)
+                .resizable()
+                .frame(width: 250, height: 250)
         }
     }
 }
