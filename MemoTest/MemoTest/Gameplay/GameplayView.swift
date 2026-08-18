@@ -76,7 +76,7 @@ struct GameplayView: View {
             Color.black
                 .ignoresSafeArea()
 
-            LottieView(animation: .named("memotest_loading_cards"))
+            LottieView(animation: .named(Globals.shared.loader_name))
                 .playing(loopMode: .loop)
                 .resizable()
                 .frame(width: 250, height: 250)
