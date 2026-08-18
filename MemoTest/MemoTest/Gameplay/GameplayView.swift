@@ -18,8 +18,8 @@ struct GameplayView: View {
 
     var body: some View {
         ZStack {
-            cardsGrid
-            
+            gameplayView
+
             if viewModel.gameplayState == .loadingGame {
                 lottieView
             }
@@ -34,53 +34,105 @@ struct GameplayView: View {
                 .transition(.scale.combined(with: .opacity))
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            gameBackground
+        }
         .task {
             await viewModel.restartGame()
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: viewModel.backToHome) {
+                    Image(Globals.shared.back_button_name)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                }
+                .accessibilityLabel("Volver al inicio")
+            }
         }
     }
 
     @ViewBuilder
-    private var cardsGrid: some View {
+    private var gameplayView: some View {
         VStack {
             HStack {
-                Text("Matchs: \(viewModel.pairFound)/\(viewModel.cards.count / 2)")
-                Spacer()
-                Text("Score: \(viewModel.gameResult.score)")
-            }
-            
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
-                ForEach(viewModel.cards) { card in
-                    CardView(card: card)
-                        .onTapGesture {
-                            withAnimation(.easeInOut) {
-                                viewModel.select(card)
-                            }
+                RoundedRectangle(cornerRadius: 10)
+                    .overlay {
+                        VStack {
+                            Text("Parejas")
+                                .foregroundStyle(.black)
+                            Text("\(viewModel.pairFound)/\(viewModel.cards.count / 2)")
+                                .foregroundStyle(.blue)
                         }
-                }
-            }
-            .navigationBarBackButtonHidden(true)
-            .onChange(of: viewModel.gameplayState) { oldValue, newValue in
-                if newValue == .mismatchDelay {
-                    withAnimation(.easeInOut.delay(0.7)) {
-                        viewModel.clearMismatch()
                     }
+                    .foregroundStyle(.white)
+                    .frame(width: 140, height: 60)
+                Spacer()
+
+                RoundedRectangle(cornerRadius: 10)
+                    .overlay {
+                        VStack {
+                            Text("Puntaje")
+                                .foregroundStyle(.black)
+                            Text("\(viewModel.gameResult.score)")
+                                .foregroundStyle(.blue)
+                        }
+                    }
+                    .foregroundStyle(.white)
+                    .frame(width: 140, height: 60)
+            }
+
+            cardsGrid
+        }
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private var cardsGrid: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+            ForEach(viewModel.cards) { card in
+                CardView(card: card)
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            viewModel.select(card)
+                        }
+                    }
+            }
+        }
+        .onChange(of: viewModel.gameplayState) { oldValue, newValue in
+            if newValue == .mismatchDelay {
+                withAnimation(.easeInOut.delay(0.7)) {
+                    viewModel.clearMismatch()
                 }
             }
-            .disabled(viewModel.gameplayState != .idle)
         }
+        .disabled(viewModel.gameplayState != .idle)
     }
 
     @ViewBuilder
     private var lottieView: some View {
         ZStack {
-            Color.black
-                .ignoresSafeArea()
-
             LottieView(animation: .named(Globals.shared.loader_name))
                 .playing(loopMode: .loop)
                 .resizable()
                 .frame(width: 250, height: 250)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            gameBackground
+        }
+    }
+
+    @ViewBuilder
+    private var gameBackground: some View {
+        Image(Globals.shared.background_image_name)
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea()
     }
 }
 
@@ -98,15 +150,6 @@ struct CardView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
-                .fill(card.isMatched ? Color.green.opacity(0.2) : Color.white)
-                .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(
-                            card.isMatched ? Color.green : Color.blue,
-                            lineWidth: 2
-                        )
-                )
                 .overlay(
                     KFImage(card.content.posterURL)
                         .placeholder {
@@ -114,25 +157,20 @@ struct CardView: View {
                         }
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 150)
+                        .frame(height: 140)
                         .cornerRadius(12)
                         .clipped()
                 )
                 .opacity(rotationAngle < 90 ? 1 : 0)
 
             RoundedRectangle(cornerRadius: 12)
-                .fill(
-                    LinearGradient(
-                        colors: [.blue, .purple],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .shadow(color: .black.opacity(0.15), radius: 4, x: 0, y: 2)
                 .overlay(
-                    Image(systemName: "questionmark.circle.fill")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
+                    Image(Globals.shared.card_background_name)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 140)
+                        .cornerRadius(12)
+                        .clipped()
                 )
                 .opacity(rotationAngle >= 90 ? 1 : 0)
         }

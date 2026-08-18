@@ -15,14 +15,12 @@ struct HomeView: View {
 
     var body: some View {
         ZStack {
-            Image(Globals.shared.background_image_name)
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-
             tableView
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background() {
+            gameBackground
+        }
     }
 
     @ViewBuilder
@@ -46,13 +44,21 @@ struct HomeView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal, 36)
+            .padding(.horizontal, 24)
         }
         .onAppear {
             Task {
                 await viewModel.refresh()
             }
         }
+    }
+    
+    @ViewBuilder
+    private var gameBackground: some View {
+        Image(Globals.shared.background_image_name)
+            .resizable()
+            .scaledToFill()
+            .ignoresSafeArea()
     }
 }
 
