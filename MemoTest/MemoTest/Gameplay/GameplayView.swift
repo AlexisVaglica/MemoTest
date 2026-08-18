@@ -60,30 +60,48 @@ struct GameplayView: View {
         VStack {
             HStack {
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(.clear)
+                    .overlay {
+                        Image(Globals.shared.info_background_name)
+                            .resizable()
+                            .scaledToFill()
+                            .clipped()
+                    }
                     .overlay {
                         VStack {
                             Text("Parejas")
-                                .foregroundStyle(.black)
-                            Text("\(viewModel.pairFound)/\(viewModel.cards.count / 2)")
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.white)
+
+                            Text(
+                                "\(viewModel.pairFound)/\(viewModel.cards.count / 2)"
+                            )
+                            .foregroundStyle(.purple)
                         }
                     }
-                    .foregroundStyle(.white)
                     .frame(width: 140, height: 60)
+
                 Spacer()
 
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(.clear)
+                    .overlay {
+                        Image(Globals.shared.info_background_name)
+                            .resizable()
+                            .scaledToFill()
+                            .clipped()
+                    }
                     .overlay {
                         VStack {
                             Text("Puntaje")
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.white)
+
                             Text("\(viewModel.gameResult.score)")
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.purple)
                         }
                     }
-                    .foregroundStyle(.white)
                     .frame(width: 140, height: 60)
             }
+            .offset(y: -10)
 
             cardsGrid
         }

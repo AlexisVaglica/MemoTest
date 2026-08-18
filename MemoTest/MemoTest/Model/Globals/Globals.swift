@@ -17,4 +17,5 @@ final class Globals {
     public let card_background_name : String = "back_card_image_violet"
     public let back_button_name : String = "back_image"
     public let match_background_name : String = "cards_match_background"
+    public let info_background_name : String = "cards_info_background"
 }
