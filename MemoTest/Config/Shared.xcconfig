@@ -1,0 +1,4 @@
+// Shared, non-sensitive build configuration.
+// Secrets.xcconfig is optional so the project can still build in CI and in fresh clones.
+TMDB_ACCESS_TOKEN =
+#include? "Secrets.xcconfig"

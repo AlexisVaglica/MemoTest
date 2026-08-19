@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8166ED6B302F9F4300607821 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8166ED6A302F9F4300607821 /* Kingfisher */; };
 		819BFCA030335F2E00183929 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 819BFC9F30335F2E00183929 /* Lottie */; };
+		81CC7D5730360F8F0022CFBA /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 81CC7D5630360F8F0022CFBA /* Secrets.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,11 +33,26 @@
 		8166ECF43026218C00607821 /* MemoTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemoTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8166ED043026218E00607821 /* MemoTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MemoTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8166ED0E3026218E00607821 /* MemoTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MemoTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81CC7D5630360F8F0022CFBA /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		A10000013040000000000001 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A10000033040000000000003 /* Exceptions for "MemoTest" folder in "MemoTest" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8166ECF33026218C00607821 /* MemoTest */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8166ECF63026218C00607821 /* MemoTest */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A10000033040000000000003 /* Exceptions for "MemoTest" folder in "MemoTest" target */,
+			);
 			path = MemoTest;
 			sourceTree = "<group>";
 		};
@@ -82,6 +98,7 @@
 		8166ECEB3026218C00607821 = {
 			isa = PBXGroup;
 			children = (
+				A10000023040000000000002 /* Config */,
 				8166ECF63026218C00607821 /* MemoTest */,
 				8166ED073026218E00607821 /* MemoTestTests */,
 				8166ED113026218E00607821 /* MemoTestUITests */,
@@ -97,6 +114,15 @@
 				8166ED0E3026218E00607821 /* MemoTestUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A10000023040000000000002 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				81CC7D5630360F8F0022CFBA /* Secrets.xcconfig */,
+				A10000013040000000000001 /* Shared.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -225,6 +251,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81CC7D5730360F8F0022CFBA /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +427,7 @@
 		};
 		8166ED193026218E00607821 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A10000013040000000000001 /* Shared.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -409,7 +437,8 @@
 				DEVELOPMENT_TEAM = HSDVP48RK8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MemoTest/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -438,6 +467,7 @@
 		};
 		8166ED1A3026218E00607821 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A10000013040000000000001 /* Shared.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -447,7 +477,8 @@
 				DEVELOPMENT_TEAM = HSDVP48RK8;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MemoTest/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

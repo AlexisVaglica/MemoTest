@@ -9,6 +9,8 @@ import Foundation
 
 enum NetworkError: Error {
 
+    case missingAccessToken
+
     case invalidURL
     case invalidResponse
 

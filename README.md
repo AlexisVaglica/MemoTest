@@ -102,6 +102,9 @@ ViewModel (@Observable)
 
 ```text
 MemoTest/
+├── Config/
+│   ├── Shared.xcconfig
+│   └── Secrets.xcconfig.example
 ├── MemoTest.xcodeproj/
 ├── MemoTest/
 │   ├── Coordinator/
@@ -176,10 +179,22 @@ El proyecto consume los endpoints `/genre/movie/list` y `/discover/movie` de TMD
 
 1. Crear una cuenta en [TMDB](https://www.themoviedb.org/signup).
 2. Solicitar una credencial de lectura en la sección de configuración de la API.
-3. Proporcionar el token al cliente de red sin publicarlo en el repositorio.
+3. Crear la configuración local a partir del ejemplo:
+
+```bash
+cp MemoTest/Config/Secrets.xcconfig.example MemoTest/Config/Secrets.xcconfig
+```
+
+4. Abrir `MemoTest/Config/Secrets.xcconfig` y reemplazar el valor de ejemplo:
+
+```xcconfig
+TMDB_ACCESS_TOKEN = tu_nuevo_token_de_lectura_de_tmdb
+```
+
+`Secrets.xcconfig` está excluido mediante `.gitignore`. `Shared.xcconfig` lo carga de forma opcional y Xcode incorpora el valor en la clave `TMDBAccessToken` del `Info.plist` generado durante la compilación. El cliente de red lee esa clave en tiempo de ejecución; si no está configurada, las solicitudes finalizan con `NetworkError.missingAccessToken`.
 
 > [!CAUTION]
-> La implementación actual mantiene el token de TMDB dentro de `MemoTest/MemoTest/Networking/Core/URLSessionClient.swift`. Antes de publicar, compartir o distribuir la aplicación, se recomienda revocar cualquier credencial expuesta, excluirla del control de versiones y cargarla desde una configuración local segura, por ejemplo un archivo `Secrets.xcconfig` ignorado por Git.
+> El token anterior estuvo versionado y puede permanecer en el historial de Git aunque ya no aparezca en el código actual. Debe revocarse desde la cuenta de TMDB y reemplazarse por uno nuevo. No reutilices la credencial expuesta.
 
 ### 5. Ejecutar
 
@@ -252,7 +267,6 @@ Las contribuciones son bienvenidas. Para proponer un cambio:
 
 ## 🗺️ Posibles mejoras
 
-- Extraer las credenciales de TMDB a una configuración segura.
 - Incorporar estados de error y reintento en las pantallas de inicio y juego.
 - Agregar niveles de dificultad y cantidad de parejas configurable.
 - Implementar cronómetro, penalizaciones por intento y ranking histórico.

@@ -10,24 +10,30 @@ import Foundation
 actor URLSessionClient: RequestClient {
     private let baseURL: URL
     private let session: URLSession
-    private let token: String = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTc3ZjBkNTQ3MGJiZmE5MWRlZDhkM2YxYzU5MThlYSIsIm5iZiI6MTcxNjMxNzI3MC4wMTIsInN1YiI6IjY2NGNlYzU2ZmI1NTM5NGI4OGNkZDQ0ZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ERDd5fjodxlanvhp8tLvkCWeCobz7Gu82vEu0eWiMJA"
+    private let accessToken: String?
 
     init(
         baseURL: URL,
-        session: URLSession = .shared
+        session: URLSession = .shared,
+        accessToken: String? = TMDBConfiguration.accessToken
     ) {
         self.baseURL = baseURL
         self.session = session
+        self.accessToken = accessToken
     }
 
     func send<Response: Decodable>(
         _ request: APIRequest<Response>
     ) async throws -> Response {
 
+        guard let accessToken else {
+            throw NetworkError.missingAccessToken
+        }
+
         var urlRequest = try buildURLRequest(from: request)
         
         urlRequest.setValue(
-                    "Bearer \(token)",
+                    "Bearer \(accessToken)",
                     forHTTPHeaderField: "Authorization"
                 )
         
@@ -71,6 +77,26 @@ actor URLSessionClient: RequestClient {
 
             throw NetworkError.decoding(error)
         }
+    }
+}
+
+private struct TMDBConfiguration {
+    static var accessToken: String? {
+        guard
+            let value = Bundle.main.object(
+                forInfoDictionaryKey: "TMDBAccessToken"
+            ) as? String
+        else {
+            return nil
+        }
+
+        let token = value.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !token.isEmpty, token != "your_tmdb_api_read_access_token" else {
+            return nil
+        }
+
+        return token
     }
 }
 
