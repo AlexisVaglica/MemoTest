@@ -48,14 +48,6 @@ La aplicación obtiene géneros y películas desde la API de [The Movie Database
 5. Encontrá las ocho parejas para terminar la partida.
 6. Volvé al inicio para consultar el mejor puntaje guardado en cada género.
 
-## 📱 Capturas de pantalla
-
-> Las capturas de la aplicación pueden agregarse en esta sección. Una estructura recomendada es crear `docs/screenshots/` y guardar allí imágenes como `home.png`, `gameplay.png` y `result.png`.
-
-<div align="center">
-  <img src="MemoTest/MemoTest/Assets.xcassets/title_image.imageset/title_image.png" alt="Identidad visual de MemoTest" width="520" />
-</div>
-
 ## 🛠️ Tecnologías utilizadas
 
 | Tecnología | Uso dentro del proyecto |
@@ -192,9 +184,6 @@ TMDB_ACCESS_TOKEN = tu_nuevo_token_de_lectura_de_tmdb
 ```
 
 `Secrets.xcconfig` está excluido mediante `.gitignore`. `Shared.xcconfig` lo carga de forma opcional y Xcode incorpora el valor en la clave `TMDBAccessToken` del `Info.plist` generado durante la compilación. El cliente de red lee esa clave en tiempo de ejecución; si no está configurada, las solicitudes finalizan con `NetworkError.missingAccessToken`.
-
-> [!CAUTION]
-> El token anterior estuvo versionado y puede permanecer en el historial de Git aunque ya no aparezca en el código actual. Debe revocarse desde la cuenta de TMDB y reemplazarse por uno nuevo. No reutilices la credencial expuesta.
 
 ### 5. Ejecutar
 
